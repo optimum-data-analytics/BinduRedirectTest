@@ -14,16 +14,17 @@ def index():
     }
 
 
-@app.post('/v1/image-captioning/{path}')
+@app.get('/v1/image-captioning/{path}', include_in_schema=False)
 async def image_captioning(path):
+    print(path)
     res = json.dumps({
         'text': "Transfer Success."
     })
     print(res)
-    return Response(res)
+    return responses.Response(content=res, status_code=200)
 
 
-@app.post('/v1/uploads')
+@app.post('/v1/uploads', response_model=Bindu, include_in_schema=False)
 async def create_img_file(image: UploadFile = File(...)):
     if not image.content_type.startswith('image'):
         raise HTTPException(status_code=400)
@@ -36,5 +37,5 @@ async def create_img_file(image: UploadFile = File(...)):
         content = await image.read()
         await fp.write(content)
 
-    URL = '/v1/image-captioning/{}.{}'.format(temp_filename, ext)
-    return responses.RedirectResponse(url=URL)
+    URL = '/v1/image-captioning/{}.{}?'.format(temp_filename, ext)
+    return responses.RedirectResponse(url=URL, status_code=303)
