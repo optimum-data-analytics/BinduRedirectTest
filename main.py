@@ -37,4 +37,5 @@ async def create_img_file(image: UploadFile = File(...)):
         await fp.write(content)
 
     URL = '/v1/image-captioning/{}.{}'.format(temp_filename, ext)
-    return responses.RedirectResponse(url=URL)
+    data = requests.post(URL)
+    return data
